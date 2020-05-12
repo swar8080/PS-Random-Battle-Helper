@@ -4,7 +4,7 @@ const walk = require('walk');
 const prepend = require('prepend-file');
 
 const PS_SOURCE_DIR = path.resolve(__dirname, '../../pokemon-showdown/');
-const TARGET_DIR = path.resolve(__dirname,'../lib/pokemon-showdown/');
+const TARGET_DIR = path.resolve(__dirname,'../src/pokemon-showdown-lib/');
 
 copyDirectory('data', '.data-dist');
 

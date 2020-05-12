@@ -6,20 +6,21 @@
         "target": "es6",
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "sourceMap": false,
+        "sourceMap": true,
         "allowJs": true,
         "resolveJsonModule": true,
-        "outDir": "dist",
+        "outDir": ".aws-sam/build/GenerateMovesets",
         "types": [
             "node",
             "./src",
-            "./lib/pokemon-showdown/sim"
+            "./src/pokemon-showdown-lib/sim",
+            "@types/aws-lambda"
         ]
     },
     "include": [
-        "src/index.ts",
-        "lib/pokemon-showdown/.data-dist/**/*",
-        "lib/pokemon-showdown/.data-dist/**/*.json",
-        "lib/pokemon-showdown/config/formats.js",
+        "src/app.ts",
+        "src/pokemon-showdown-lib/.data-dist/**/*",
+        "src/pokemon-showdown-lib/.data-dist/**/*.json",
+        "src/pokemon-showdown-lib/config/formats.js",
     ]
 }

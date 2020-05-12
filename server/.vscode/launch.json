@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "HelloWorldFunction",
+        "type": "node",
+        "request": "attach",
+        "address": "192.168.99.100",
+        "port": 5858,
+        "localRoot": "${workspaceRoot}/.aws-sam/build/GenerateMovesets",
+        "remoteRoot": "/var/task",
+        "protocol": "inspector",
+        "stopOnEntry": false,
+        "outFiles": [
+          "${workspaceRoot}/.aws-sam/build/GenerateMovesets/app.js"
+        ],
+        "sourceMaps": true
+      }
+    ]
+  }

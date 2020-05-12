@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  GenerateMovesets:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: GenerateMovesets
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Timeout: 10
+      MemorySize: 256
+      Events:
+        GenerateMovesets:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get

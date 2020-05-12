@@ -2,8 +2,8 @@
  * @prettier
  */
 
-import { Dex, PRNG } from "../lib/pokemon-showdown/sim";
-import { RandomTeams } from "../lib/pokemon-showdown/.data-dist/random-teams";
+import { Dex, PRNG } from "./pokemon-showdown-lib/sim";
+import { RandomTeams } from "./pokemon-showdown-lib/.data-dist/random-teams";
 
 export function generateMoveSets(
     pokemonName: string,
