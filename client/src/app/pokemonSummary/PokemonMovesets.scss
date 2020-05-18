@@ -1,0 +1,48 @@
+.movesets {
+    max-height: 45vh;
+    overflow-y: auto;
+}
+
+.movesets__columnHeaders {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px #AAAAAA solid;
+    
+    > div {
+        width: 50%;
+        text-align: center;
+        font-weight: 600;
+    }
+}
+
+.movesets__moveset {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem 0;
+}
+
+.movesets__moveOccurrences {
+    width: 50%;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.movesets__moveDetails {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    img {
+        box-sizing: content-box;
+        width: 32px;
+        height: 14px;
+        padding: 0.125rem 0 0 0.25rem;
+    }
+}
+
+.movesets__moveName {
+    text-align: center;
+}

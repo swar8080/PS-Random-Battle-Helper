@@ -1,6 +1,0 @@
-src/pokemon-showdown-lib/*
-
-.aws-sam/build/GenerateMovesets/*
-samconfig.toml
-
-node_modules/*

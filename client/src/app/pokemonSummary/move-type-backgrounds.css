@@ -1,0 +1,179 @@
+/** From https://github.com/smogon/pokemon-showdown-client/blob/master/style/sim-types.css **/
+.move-type-background-Normal {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(60, 14%, 93%);
+    background: linear-gradient(to bottom, hsl(60, 14%, 97%), hsl(60, 14%, 84%));
+    border-color: hsl(60, 14%, 70%);
+}
+.move-type-background-Normal small {
+    color: hsl(60, 14%, 41%);
+}
+
+.move-type-background-Fighting {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(3, 40%, 93%);
+    background: linear-gradient(to bottom, hsl(3, 40%, 97%), hsl(3, 40%, 84%));
+    border-color: hsl(3, 40%, 70%);
+}
+.move-type-background-Fighting small {
+    color: hsl(3, 40%, 41%);
+}
+
+.move-type-background-Flying {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(255, 20%, 93%);
+    background: linear-gradient(to bottom, hsl(255, 20%, 97%), hsl(255, 20%, 84%));
+    border-color: hsl(255, 20%, 70%);
+}
+.move-type-background-Flying small {
+    color: hsl(255, 20%, 41%);
+}
+
+.move-type-background-Poison {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(300, 30%, 93%);
+    background: linear-gradient(to bottom, hsl(300, 30%, 97%), hsl(300, 30%, 84%));
+    border-color: hsl(300, 30%, 70%);
+}
+.move-type-background-Poison small {
+    color: hsl(300, 30%, 41%);
+}
+
+.move-type-background-Ground {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(44, 27%, 93%);
+    background: linear-gradient(to bottom, hsl(44, 27%, 97%), hsl(44, 27%, 84%));
+    border-color: hsl(44, 27%, 70%);
+}
+.move-type-background-Ground small {
+    color: hsl(44, 27%, 41%);
+}
+
+.move-type-background-Rock {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(49, 35%, 93%);
+    background: linear-gradient(to bottom, hsl(49, 35%, 97%), hsl(49, 35%, 84%));
+    border-color: hsl(49, 35%, 70%);
+}
+.move-type-background-Rock small {
+    color: hsl(49, 35%, 41%);
+}
+
+.move-type-background-Bug {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(66, 42%, 93%);
+    background: linear-gradient(to bottom, hsl(66, 42%, 97%), hsl(66, 42%, 84%));
+    border-color: hsl(66, 42%, 70%);
+}
+.move-type-background-Bug small {
+    color: hsl(66, 42%, 41%);
+}
+
+.move-type-background-Ghost {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(262, 21%, 93%);
+    background: linear-gradient(to bottom, hsl(262, 21%, 97%), hsl(262, 21%, 84%));
+    border-color: hsl(262, 21%, 70%);
+}
+.move-type-background-Ghost small {
+    color: hsl(262, 21%, 41%);
+}
+
+.move-type-background-Steel {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(240, 6%, 93%);
+    background: linear-gradient(to bottom, hsl(240, 6%, 97%), hsl(240, 6%, 84%));
+    border-color: hsl(240, 6%, 70%);
+}
+.move-type-background-Steel small {
+    color: hsl(240, 6%, 41%);
+}
+
+.move-type-background-Fire {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(25, 40%, 93%);
+    background: linear-gradient(to bottom, hsl(25, 40%, 97%), hsl(25, 40%, 84%));
+    border-color: hsl(25, 40%, 70%);
+}
+.move-type-background-Fire small {
+    color: hsl(25, 40%, 41%);
+}
+
+.move-type-background-Water {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(222, 29%, 93%);
+    background: linear-gradient(to bottom, hsl(222, 29%, 97%), hsl(222, 29%, 84%));
+    border-color: hsl(222, 29%, 70%);
+}
+.move-type-background-Water small {
+    color: hsl(222, 29%, 41%);
+}
+
+.move-type-background-Grass {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(100, 30%, 93%);
+    background: linear-gradient(to bottom, hsl(100, 30%, 97%), hsl(100, 30%, 84%));
+    border-color: hsl(100, 30%, 70%);
+}
+.move-type-background-Grass small {
+    color: hsl(100, 30%, 41%);
+}
+
+.move-type-background-Electric {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(48, 41%, 93%);
+    background: linear-gradient(to bottom, hsl(48, 41%, 97%), hsl(48, 41%, 84%));
+    border-color: hsl(48, 41%, 70%);
+}
+.move-type-background-Electric small {
+    color: hsl(48, 41%, 41%);
+}
+
+.move-type-background-Psychic {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(342, 33%, 93%);
+    background: linear-gradient(to bottom, hsl(342, 33%, 97%), hsl(342, 33%, 84%));
+    border-color: hsl(342, 33%, 70%);
+}
+.move-type-background-Psychic small {
+    color: hsl(342, 33%, 41%);
+}
+
+.move-type-background-Ice {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(180, 15%, 93%);
+    background: linear-gradient(to bottom, hsl(180, 15%, 97%), hsl(180, 15%, 84%));
+    border-color: hsl(180, 15%, 70%);
+}
+.move-type-background-Ice small {
+    color: hsl(180, 15%, 41%);
+}
+.move-type-background-Dragon {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(257, 39%, 93%);
+    background: linear-gradient(to bottom, hsl(257, 39%, 97%), hsl(257, 39%, 84%));
+    border-color: hsl(257, 39%, 70%);
+}
+.move-type-background-Dragon small {
+    color: hsl(257, 39%, 41%);
+}
+
+.move-type-background-Dark {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(24, 18%, 93%);
+    background: linear-gradient(to bottom, hsl(24, 18%, 97%), hsl(24, 18%, 84%));
+    border-color: hsl(24, 18%, 70%);
+}
+.move-type-background-Dark small {
+    color: hsl(24, 18%, 41%);
+}
+
+.move-type-background-Fairy {
+    /* bg: 97 to 90, border: 70 */
+    background: hsl(310, 41%, 93%);
+    background: linear-gradient(to bottom, hsl(310, 41%, 97%), hsl(310, 41%, 84%));
+    border-color: hsl(310, 41%, 70%);
+}
+.move-type-background-Fairy small {
+    color: hsl(310, 41%, 41%);
+}

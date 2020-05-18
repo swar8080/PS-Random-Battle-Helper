@@ -1,0 +1,33 @@
+.pokemonSelectorForm {
+    width: 100%;
+}
+
+.pokemonSelectorForm__inputs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    //no margin on first line, 0.5rem on when wrap to second line
+    margin-top: -0.5rem;
+    > * {
+        margin-top: 0.5rem;
+    }
+}
+
+.pokemonSelectorForm-input {
+    margin: 0 0.5rem 0 0.1rem;
+}
+
+.pokemonSelectorForm__submitButton--invalidPokemon:not(.pokemonSelectorForm__submitButton--loading) {
+    cursor: not-allowed;
+}
+
+.pokemonSelectorForm__submitButton--loading {
+    cursor: wait;
+}
+
+.pokemonSelectorForm__submitError {
+    text-align: center;
+    color: red;
+    padding-top: 0.25rem;
+}

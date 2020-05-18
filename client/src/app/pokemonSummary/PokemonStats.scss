@@ -1,0 +1,39 @@
+.pokemonStats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pokemonStats__heading {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.pokemonStats__statList {
+    display: flex;
+    flex-direction: column;
+    min-width: 60%;
+}
+
+.pokemonStats__stat {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px black solid;
+    font-size: 14px;
+
+    > div {
+        width: 50%;
+    }
+
+    &:nth-child(even) {
+        background-color: #f0f0f0;
+    }
+}
+
+.pokemonStats__statLabel {
+    text-align: center;
+}
+
+.pokemonStats__statValue {
+    text-align: center;
+}

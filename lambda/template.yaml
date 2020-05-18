@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  PokemonSummaryEndpoint:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: .aws-sam/build/PokemonSummaryEndpoint
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Timeout: 10
+      MemorySize: 212
+      Events:
+        PokemonSummaryEndpointApi:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get 
+
+  ClientStaticResourcesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: pokemon-showdown-random-battle-helper
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+          IndexDocument: index.html
+  
+  ClientStaticResourcesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ClientStaticResourcesBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref ClientStaticResourcesBucket
+                - /*

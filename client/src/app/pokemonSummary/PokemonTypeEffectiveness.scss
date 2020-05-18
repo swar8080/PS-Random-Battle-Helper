@@ -1,0 +1,45 @@
+.typeEffectiveness {
+    display: flex;
+    justify-content: center;
+}
+
+.typeEffectiveness__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.typeEffectiveness__heading {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.pokemon-type-label {
+    box-sizing: content-box;
+    width: 32px;
+    height: 14px;
+}
+
+.typeEffectiveness__pokemonTypes {
+
+    .pokemon-type-label {
+        padding: 0.25rem 0 0 0.25rem;
+    }
+}
+
+.typeEffectiveness__lists {
+    display: flex;
+    flex-direction: column;
+}
+
+.typeEffectiveness__list {
+    display: flex;
+    padding: 0.125rem 0;
+    font-size: 14px;
+
+    .pokemon-type-label {
+        padding: 0.25rem 0 0 0.25rem;
+    }
+}

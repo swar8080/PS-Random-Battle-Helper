@@ -1,0 +1,34 @@
+{
+  "name": "pokemon-showdown-move-simulator",
+  "version": "1.0.0",
+  "scripts": {
+    "run": "node dist/src/index.js",
+    "setup": "npm run cleanup && npm run copy && npm run tsc",
+    "tsc": "tsc",
+    "build": "npm run cleanup:build && tsc -p tsconfig.prod.json",
+    "watch": "tsc-watch",
+    "cleanup": "npm run cleanup:ps && npm run cleanup:build",
+    "cleanup:ps": "rimraf src/pokemon-showdown-lib",
+    "cleanup:build": "rimraf .aws-sam/build/PokemonSummaryEndpoint",
+    "test": "npx jest",
+    "deploy": "npm run build && sam deploy",
+    "copy": "node scripts/copyDependenciesToLib.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.51",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^13.13.5",
+    "fs-extra": "^9.0.0",
+    "jest": "^26.0.1",
+    "prepend-file": "^1.3.1",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.0.0",
+    "ts-node": "^8.10.1",
+    "tsc-watch": "^4.2.3",
+    "typescript": "^3.8.3",
+    "walk": "^2.3.14"
+  }
+}

@@ -1,0 +1,18 @@
+
+
+.pokemonSummaryHeading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pokemonSummaryHeading__sprite {
+    width: 96px;
+    height: 64px;
+    object-fit: cover; //crop some of the whitespace
+    margin-bottom: 0.5rem;
+}
+
+.pokemonSummaryHeading__text {
+    font-weight: bold;
+}

@@ -1,0 +1,6 @@
+src/pokemon-showdown-lib/*
+
+.aws-sam/*
+samconfig.toml
+
+node_modules/*

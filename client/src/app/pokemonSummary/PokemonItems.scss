@@ -1,0 +1,15 @@
+.itemOccurences__heading {
+    font-weight: bold;
+    text-align: center;
+}
+
+.itemOccurences__itemOccurence {
+    display: flex;
+    align-items: stretch;
+
+    > div {
+        display: flex;
+        align-items: center; 
+        padding: 0.25rem;
+    }
+}

@@ -1,0 +1,90 @@
+$sectionSpacing: 0.5rem;
+
+.pokemonSummary {
+    max-width: 80%;
+    margin: 0 auto;
+    border: 1px lightgrey solid;
+    position: relative;
+}
+
+.pokemonSummary__form {
+    padding: $sectionSpacing 0;
+    background-color: #f5f5f5;
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pokemonSummary__heading {
+    background-color: #f5f5f5;
+    border-bottom: 2px lightgrey solid;
+}
+
+.pokemonSummary__simulation {
+    padding-top: $sectionSpacing;
+    border-bottom: 2px lightgrey solid;
+}
+
+.pokemonSummary__simulationDataHeading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.pokemonSummary__simulationSubheading {
+    text-align: center;
+    color: #666666;
+    font-size: 12px;
+}
+
+.pokemonSummary__simulationData {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+    //2 units of spacing on the first line, 1 unit when wrap to the next line
+    margin: $sectionSpacing 0 $sectionSpacing 0;
+    > * {
+        margin-top: $sectionSpacing;
+    }
+}
+
+.pokemonSummary__movesets {
+    min-width: 35%;
+    border: 1px lightgrey solid;
+}
+
+.pokemonSummary_generalInfo {
+    margin: $sectionSpacing 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-top: 0;
+    > * {
+        margin-top: $sectionSpacing;
+        flex-grow: 1;
+    }
+}
+
+.pokemonSummary__resultsContainer--loading {
+    min-height: 40vh;
+
+    .pokemonSummary__results {
+        opacity: 50%;
+    }
+}
+
+.pokemonSummary__spinnerContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .pokemonSummary__spinner {
+        margin: 0;
+    }
+}
