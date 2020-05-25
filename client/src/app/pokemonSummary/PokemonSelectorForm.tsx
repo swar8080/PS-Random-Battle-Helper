@@ -90,6 +90,12 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                     handleSubmit();
                 };
 
+                const submitIfEnterPressed = (event: React.KeyboardEvent) => {
+                    if (canSubmit){
+                        onEnterKeyPressed(event, handleSubmit);
+                    }
+                }
+
                 return (
                     <div className="pokemonSelectorForm">
                         <div className="pokemonSelectorForm__inputs">
@@ -102,8 +108,7 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                                     inputProps={{
                                         name: "pokemonName",
                                         className: "pokemonSelectorForm-input",
-                                        onKeyPress: (event) =>
-                                            onEnterKeyPressed(event, handleSubmit),
+                                        onKeyPress: submitIfEnterPressed,
                                         disabled: isSubmitting,
                                     }}
                                     inputRef={pokemonNameInputRef}
