@@ -4,9 +4,9 @@
 
 import * as React from "react";
 import Autosuggest from "react-autosuggest";
-import { POKEMON_NAME_IDS, getPokemonDisplayNameByIndex } from "../util/pokemonNameUtil";
+import { POKEMON_NAME_IDS, getPokemonDisplayNameByIndex } from "../util/pokemonMetadataUtil";
 import "./PokemonAutoSuggestInput.scss";
-import { displayNameToPokemonId } from "../util/pokemonNameUtil";
+import { displayNameToPokemonId } from "../util/pokemonMetadataUtil";
 
 interface PokemonAutoSuggestInputProps {
     value: string;

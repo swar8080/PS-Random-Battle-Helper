@@ -15,7 +15,7 @@ const POKEDEX_JS_TEMP_PATH = path.resolve(TMP_DIR, "pokedex.js");
 const OUT_DATA_DIR = path.resolve(__dirname, "../src/data");
 const OUT_JSON_FILE = path.resolve(OUT_DATA_DIR, "pokemon.json");
 
-const BLACKLIST = /(-(Mega|Gmax|Alola|Galar|Primal|Origin|Complete|10|Totem|Minior|Busted|Low-Key|Antique|Noice|Hangry|Crowned|Black|White|Ash|Large|Small|Super|Striped))|(^Pokestar.*)|(Pikachu-)|(Oricorio-)|(Arceus-)|(Silvally-)|(Type:)/;
+const BLACKLIST = /(-(Mega|Gmax|Galar|Primal|Origin|Complete|10|Totem|Minior|Busted|Low-Key|Antique|Noice|Hangry|Crowned|Black|White|Ash|Large|Small|Super|Striped))|(^Pokestar.*)|(Pikachu-)|(Oricorio-)|(Arceus-)|(Silvally-)|(Type:)/;
 const pokemonFilter = (name) => {
     //TODO find better way to filter out different variants
     const include = !BLACKLIST.test(name);

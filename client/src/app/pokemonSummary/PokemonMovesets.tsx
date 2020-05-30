@@ -6,6 +6,7 @@ import * as React from "react";
 import "./move-type-backgrounds.css";
 import "./PokemonMovesets.scss";
 import { getMoveEffectTypeSpriteUrl, getTypeLabelSpriteUrl } from "../util/sprites";
+import { getDisplayedTypeName } from "../util/pokemonMetadataUtil";
 
 interface PokemonMovesetsProps {
     moveOccurences: Common.MovesWithOccurences;
@@ -13,7 +14,10 @@ interface PokemonMovesetsProps {
 
 const PokemonMovesets: React.FC<PokemonMovesetsProps> = ({ moveOccurences }) => {
     const moveEntries = moveOccurences.map((move) => (
-        <div key={move.name} className={`movesets__moveset move-type-background-${move.moveType}`}>
+        <div
+            key={move.name}
+            className={`movesets__moveset move-type-background-${getDisplayedTypeName(move.moveType)}`}
+        >
             <MoveDetails move={move} key={move.name} />
             <div className="movesets__moveOccurrences">{move.occurences}</div>
         </div>

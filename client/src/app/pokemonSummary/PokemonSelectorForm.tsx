@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import cn from "classnames";
 import "./PokemonSelectorForm.scss";
 import PokemonAutoSuggestInput from "./PokemonAutoSuggestInput";
-import { isValidPokemonName } from "../util/pokemonNameUtil";
+import { isValidPokemonName } from "../util/pokemonMetadataUtil";
 import { onEnterKeyPressed } from "../util/keyboardUtil";
 
 interface PokemonSelectorFormProps {

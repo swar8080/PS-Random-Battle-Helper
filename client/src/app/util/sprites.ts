@@ -1,3 +1,5 @@
+import { getDisplayedTypeName } from "./pokemonMetadataUtil";
+
 /**
  * @prettier
  */
@@ -28,7 +30,8 @@ export function getItemSpriteUrl(displayName: string): string {
 }
 
 export function getTypeLabelSpriteUrl(typeName: string): string {
-    const normalizedName = typeName.charAt(0).toUpperCase() + typeName.substring(1);
+    const displayedTypeName = getDisplayedTypeName(typeName);
+    const normalizedName = displayedTypeName.charAt(0).toUpperCase() + displayedTypeName.substring(1);
     return `${BASE_SPRITE_URL}/types/${normalizedName}.png`;
 }
 

@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import qs from "qs";
-import { isValidPokemonName, isValidGen } from "./util/pokemonNameUtil";
+import { isValidPokemonName, isValidGen } from "./util/pokemonMetadataUtil";
 
 type SearchUrlParams = {
     pokemon?: string;
