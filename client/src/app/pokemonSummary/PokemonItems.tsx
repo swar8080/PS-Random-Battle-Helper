@@ -13,9 +13,9 @@ interface PokemonItemsProps {
 const PokemonItems: React.FC<PokemonItemsProps> = ({ itemOccurences }) => {
     const itemEntries = itemOccurences.map((item) => (
         <div className='itemOccurences__itemOccurence' key={item.itemDisplayName}>
-            <div className='tooltip' title={item.description}>
-                <img src={getItemSpriteUrl(item.itemDisplayName)} alt=''/>
-                <span>{item.itemDisplayName}</span>
+            <div title={item.description}>
+                <img src={getItemSpriteUrl(item.itemDisplayName)} alt='' className='tooltip'/>
+                <span className='tooltip'>{item.itemDisplayName}</span>
                 <span>:</span>
             </div>
             <div>{item.occurences} occurrences</div>

@@ -13,6 +13,11 @@
     display: flex;
     flex-direction: column;
     min-width: 60%;
+    
+    border: 1px lightgrey solid;
+    .pokemonStats__stat:last-child {
+        border-bottom: none;
+    }
 }
 
 .pokemonStats__stat {
