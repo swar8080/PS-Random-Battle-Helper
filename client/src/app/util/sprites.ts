@@ -1,13 +1,19 @@
-import { getDisplayedTypeName } from "./pokemonMetadataUtil";
-
 /**
  * @prettier
  */
+
+import { getDisplayedTypeName, getSpriteOverrideForDisplayName } from "./pokemonMetadataUtil";
+
 const BASE_SPRITE_URL =
-    process.env.NODE_ENV === "production" ? `${window.location.origin}/sprites` : process.env.REACT_APP_SPRITE_URL;
+    process.env.NODE_ENV === "production"
+        ? `${window.location.origin}/sprites`
+        : process.env.REACT_APP_SPRITE_URL;
 
 export function getPokemonSpriteUrl(displayName: string, generation: Common.Generation): string {
-    if (generation <= "6") {
+    const spriteOverride = getSpriteOverrideForDisplayName(displayName);
+    if (spriteOverride) {
+        return `${BASE_SPRITE_URL}/${spriteOverride}`;
+    } else if (generation <= "6") {
         return `${BASE_SPRITE_URL}/gen${generation}/${getPokemonFileName(displayName)}`;
     } else {
         return `${BASE_SPRITE_URL}/dex/${getPokemonFileName(displayName)}`;
@@ -16,7 +22,6 @@ export function getPokemonSpriteUrl(displayName: string, generation: Common.Gene
 
 function getPokemonFileName(displayName: string) {
     const normalizedName = displayName.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "");
-
     return `${normalizedName}.png`;
 }
 
@@ -31,7 +36,8 @@ export function getItemSpriteUrl(displayName: string): string {
 
 export function getTypeLabelSpriteUrl(typeName: string): string {
     const displayedTypeName = getDisplayedTypeName(typeName);
-    const normalizedName = displayedTypeName.charAt(0).toUpperCase() + displayedTypeName.substring(1);
+    const normalizedName =
+        displayedTypeName.charAt(0).toUpperCase() + displayedTypeName.substring(1);
     return `${BASE_SPRITE_URL}/types/${normalizedName}.png`;
 }
 

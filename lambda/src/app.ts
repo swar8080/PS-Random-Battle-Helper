@@ -2,11 +2,13 @@
  * @prettier
  */
 import { Dex } from "./pokemon-showdown-lib/sim";
-import { getRandomSetGenerator, RandomSetGenerator } from './RandomSetGenerator';
+import { getRandomSetGenerator, RandomSetGenerator } from "./RandomSetGenerator";
+import CustomError from "./customError";
 
 type RequestParams = { gen?: Common.Generation; pokemonName?: string } | null;
 
 const SET_COUNT_DEFAULT = "100";
+const SET_COUNT = parseInt(process.env.SET_COUNT || SET_COUNT_DEFAULT);
 
 exports.lambdaHandler = async (
     event: AWSLambda.APIGatewayEvent,
@@ -15,39 +17,47 @@ exports.lambdaHandler = async (
     let res: Common.APIResponse<Common.PokemonSummary>;
     try {
         const params: RequestParams = event.queryStringParameters;
+        console.log(params.pokemonName, params.gen);
         const pokemonSummary = getPokemonSummary(params.pokemonName, params.gen);
         res = {
             successful: true,
-            data: pokemonSummary
+            data: pokemonSummary,
         };
     } catch (err) {
         console.log(err);
-        res = {successful: false, data: undefined};
+        res = { successful: false, data: undefined };
+        if (err instanceof CustomError){
+            res.errorMsg = err.message;
+        }
     }
-    
+
     return {
-        statusCode: res.successful? 200 : 500,
-        headers: {"Access-Control-Allow-Origin": "*"},
-        body: JSON.stringify(res)
+        statusCode: res.successful ? 200 : 500,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify(res),
     };
 };
 
 function getPokemonSummary(pokemonName: string, gen: Common.Generation): Common.PokemonSummary {
     const metadata: ModdedDex = Dex.forGen(parseInt(gen));
 
-    const setCount = parseInt(process.env.SET_COUNT || SET_COUNT_DEFAULT);
-    const sets: RandomTeamsTypes.RandomSet[] = generateMoveSets(pokemonName, gen, setCount, metadata);
-    const species: SpeciesData = metadata.getSpecies(pokemonName);
-   
+    const sets: RandomTeamsTypes.RandomSet[] = generateMoveSets(
+        pokemonName,
+        gen,
+        SET_COUNT,
+        metadata
+    );
+    const species: Species = metadata.getSpecies(pokemonName);
+
     const summary: Common.PokemonSummary = {
         displayName: species.name,
         type1: species.types[0],
         type2: species.types.length > 1 ? species.types[1] : null,
         simulationResult: {
             moveOccurrences: getMoveOccurences(sets, metadata),
-            abilityOccurences: getAbilityOccurences(sets, metadata),
-            itemOccurences: getItemOccurences(sets, metadata),
-            setsGenerated: setCount,
+            abilityOccurences: getAbilityOccurences(sets, metadata, species),
+            itemOccurences: getItemOccurences(sets, metadata, species),
+            setsGenerated: SET_COUNT,
         },
         baseStats: species.baseStats,
         typeEffectiveness: getTypeEffectiveness(species, metadata),
@@ -60,7 +70,7 @@ function generateMoveSets(
     pokemonName: string,
     gen: Common.Generation,
     setCount: number,
-    metadata: ModdedDex,
+    metadata: ModdedDex
 ): RandomTeamsTypes.RandomSet[] {
     const randomSetGenerator: RandomSetGenerator = getRandomSetGenerator(gen);
     return randomSetGenerator.generateSets(metadata, gen, pokemonName, setCount);
@@ -74,44 +84,76 @@ function getMoveOccurences(
     const extractUniqueMoveKeysFromSet = (set: RandomTeamsTypes.RandomSet) =>
         Array.from(new Set(set.moves));
 
-    return getOccurenceCounts(sets, extractUniqueMoveKeysFromSet).map(([moveId, occurences]) => {
-        const move = metadata.getMove(moveId);
-        return {
-            name: move.name,
-            moveType: move.type,
-            description: move.desc || move.shortDesc,
-            effectType: move.category,
-            occurences,
-        };
-    }).sort(sortByOccurencesDesc);
+    return getOccurenceCounts(sets, extractUniqueMoveKeysFromSet)
+        .map(([moveId, occurences]) => {
+            const move = metadata.getMove(moveId);
+            return {
+                name: move.name,
+                moveType: move.type,
+                description: move.desc || move.shortDesc,
+                effectType: move.category,
+                occurences,
+            };
+        })
+        .sort(sortByOccurencesDesc);
 }
 
 function getAbilityOccurences(
     sets: RandomTeamsTypes.RandomSet[],
-    metadata: ModdedDex
+    metadata: ModdedDex,
+    species: Species
 ): Common.AbilityOccurence[] {
-    return getOccurenceCounts(sets, (set) => [set.ability]).map(([abilityId, occurences]) => {
-        const ability = metadata.getAbility(abilityId);
-        return {
-            abilityDisplayName: ability.name,
-            description: ability.desc || ability.shortDesc,
-            occurences,
-        };
-    }).sort(sortByOccurencesDesc);;
+    if (species.isMega || species.isPrimal){
+        //simulation results are for the base species, so need to explicitly handle different formes' abilities
+        const formeAbility = metadata.getAbility(species.abilities[0]);
+        return [
+            {
+                abilityDisplayName: formeAbility.name,
+                description: formeAbility.desc || formeAbility.shortDesc,
+                occurences: SET_COUNT
+            }
+        ]
+    }
+    else {
+        return getOccurenceCounts(sets, (set) => [set.ability])
+        .map(([abilityId, occurences]) => {
+            const ability = metadata.getAbility(abilityId);
+            return {
+                abilityDisplayName: ability.name,
+                description: ability.desc || ability.shortDesc,
+                occurences,
+            };
+        })
+        .sort(sortByOccurencesDesc);   
+    }
 }
 
 function getItemOccurences(
     sets: RandomTeamsTypes.RandomSet[],
-    metadata: ModdedDex
+    metadata: ModdedDex,
+    species: Species
 ): Common.ItemOccurence[] {
-    return getOccurenceCounts(sets, (set) => [set.item]).map(([itemId, occurences]) => {
-        const item = metadata.getItem(itemId);
-        return {
-            itemDisplayName: item.name,
-            description: item.desc || item.shortDesc,
-            occurences,
-        };
-    }).sort(sortByOccurencesDesc);;
+    if (species.requiredItem) {
+        const requiredItem = metadata.getSpecies(species.requiredItem);
+        return [
+            {
+                itemDisplayName: requiredItem.name,
+                description: requiredItem.desc || requiredItem.shortDesc,
+                occurences: SET_COUNT,
+            },
+        ];
+    } else {
+        return getOccurenceCounts(sets, (set) => [set.item])
+            .map(([itemId, occurences]) => {
+                const item = metadata.getItem(itemId);
+                return {
+                    itemDisplayName: item.name,
+                    description: item.desc || item.shortDesc,
+                    occurences,
+                };
+            })
+            .sort(sortByOccurencesDesc);
+    }
 }
 
 function getOccurenceCounts<T>(sets: T[], keyExtractor: (set: T) => string[]): [string, number][] {
@@ -132,8 +174,8 @@ function getOccurenceCounts<T>(sets: T[], keyExtractor: (set: T) => string[]): [
     return Object.entries(countByKey);
 }
 
-type HasOccurences = {occurences: number};
-function sortByOccurencesDesc(a1: HasOccurences, a2: HasOccurences){
+type HasOccurences = { occurences: number };
+function sortByOccurencesDesc(a1: HasOccurences, a2: HasOccurences) {
     return -(a1.occurences - a2.occurences);
 }
 
@@ -172,11 +214,12 @@ function getTypeEffectiveness(
         .forEach(([typeName, damageEnum]) => {
             let damageMultiplier: number = DAMAGE_MULTIPLIERS[damageEnum as DamageEnum];
             if (type2Info) {
-                damageMultiplier *= DAMAGE_MULTIPLIERS[type2Info.damageTaken[typeName] as DamageEnum];
+                damageMultiplier *=
+                    DAMAGE_MULTIPLIERS[type2Info.damageTaken[typeName] as DamageEnum];
             }
             typeEffectiveness[damageMultiplier as Common.TypeEffectiveness].push(typeName);
         });
 
-    Object.values(typeEffectiveness).forEach(typeList => typeList.sort());
-    return typeEffectiveness
+    Object.values(typeEffectiveness).forEach((typeList) => typeList.sort());
+    return typeEffectiveness;
 }
