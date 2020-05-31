@@ -7,7 +7,7 @@ import { Formik } from "formik";
 import cn from "classnames";
 import "./PokemonSelectorForm.scss";
 import PokemonAutoSuggestInput from "./PokemonAutoSuggestInput";
-import { isValidPokemonName } from "../util/pokemonMetadataUtil";
+import { isValidPokemonDisplayName } from "../util/pokemonMetadataUtil";
 import { onEnterKeyPressed } from "../util/keyboardUtil";
 
 interface PokemonSelectorFormProps {
@@ -73,7 +73,7 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                 });
             }}
             children={({ values, handleSubmit, handleChange, setFieldValue, isSubmitting }) => {
-                const hasValidPokemon = isValidPokemonName(values.pokemonName);
+                const hasValidPokemon = isValidPokemonDisplayName(values.pokemonName, values.generation);
                 const canSubmit: boolean = !isLoading && hasValidPokemon;
 
                 const getSubmitButtonTooltip = (): string => {
@@ -103,6 +103,7 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                             <div className="pokemonSelectorForm__nameInputContainer">
                                 <PokemonAutoSuggestInput
                                     value={values.pokemonName}
+                                    currentGen={values.generation}
                                     handleChange={handleChange}
                                     onSuggestionSelected={handleSuggestionSelected}
                                     inputProps={{

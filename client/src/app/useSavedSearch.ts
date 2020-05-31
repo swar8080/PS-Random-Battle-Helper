@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import qs from "qs";
-import { isValidPokemonName, isValidGen } from "./util/pokemonMetadataUtil";
+import { isValidPokemonDisplayName, isValidGen } from "./util/pokemonMetadataUtil";
 
 type SearchUrlParams = {
     pokemon?: string;
@@ -30,10 +30,8 @@ const useSavedSearch = () => {
 function getUrlParamSearch(): Client.PokemonSummarySearchInputs | null {
     const params: SearchUrlParams = qs.parse(window.location.search, { ignoreQueryPrefix: true });
     if (
-        params.pokemon &&
-        isValidPokemonName(params.pokemon) &&
-        params.gen &&
-        isValidGen(params.gen)
+        params.gen && isValidGen(params.gen) &&
+        params.pokemon && isValidPokemonDisplayName(params.pokemon, params.gen)
     ) {
         return {
             pokemonName: params.pokemon,

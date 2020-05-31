@@ -1,7 +1,14 @@
-import PokemonNames from '../../data/pokemon.json';
+import _PokemonData from '../../data/pokemon.json';
 
-export const POKEMON_NAME_IDS: string[] = Object.keys(PokemonNames);
+type PokemonMetadata = {
+    name: string,
+    gen: Common.Generation
+}
+//@ts-ignore
+const PokemonData: Record<string, PokemonMetadata> = _PokemonData;
+
 const VALID_GENS = new Set(["1", "2", "3", "4", "5", "6", "7", "8"]);
+
 
 export function displayNameToPokemonId(name: string){
     if (name){
@@ -10,14 +17,24 @@ export function displayNameToPokemonId(name: string){
     return name;
 }
 
-export function isValidPokemonName(name: string){
-    return displayNameToPokemonId(name) in PokemonNames;
+export function pokemonIdToDisplayName(pokemonId: string){
+    const metadata = PokemonData[pokemonId];
+    if (metadata){
+        return metadata.name;
+    }
+    return pokemonId;
 }
 
-export function getPokemonDisplayNameByIndex(index: number): string{
-    const nameId = POKEMON_NAME_IDS[index];
-    //@ts-ignore
-    return PokemonNames[nameId];
+export function isValidPokemonDisplayName(displayName: string, gen: Common.Generation){
+    const pokemonId = displayNameToPokemonId(displayName);
+    const pokemon: PokemonMetadata = PokemonData[pokemonId];
+    return pokemon && gen >= pokemon.gen;
+}
+
+export function getSortedPokemonIdsReleasedInGen(gen: Common.Generation): string[] {
+    return Object.entries(PokemonData)
+        .filter(entry => gen >= entry[1].gen)
+        .map(entry => entry[0]);
 }
 
 export function isValidGen(gen: string){

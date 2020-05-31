@@ -4,12 +4,12 @@
 
 import * as React from "react";
 import Autosuggest from "react-autosuggest";
-import { POKEMON_NAME_IDS, getPokemonDisplayNameByIndex } from "../util/pokemonMetadataUtil";
 import "./PokemonAutoSuggestInput.scss";
-import { displayNameToPokemonId } from "../util/pokemonMetadataUtil";
+import { displayNameToPokemonId, getSortedPokemonIdsReleasedInGen, pokemonIdToDisplayName } from "../util/pokemonMetadataUtil";
 
 interface PokemonAutoSuggestInputProps {
     value: string;
+    currentGen: Common.Generation;
     handleChange(e: React.ChangeEvent<any>): void;
     onSuggestionSelected(newNameValue: string): void;
     inputProps: Partial<React.InputHTMLAttributes<any>>;
@@ -20,13 +20,16 @@ const SUGGESTION_LIMIT = 7;
 
 const PokemonAutoSuggestInput: React.FC<PokemonAutoSuggestInputProps> = ({
     value,
+    currentGen,
     handleChange,
     onSuggestionSelected,
     inputProps,
     inputRef,
 }) => {
-    const suggestions: string[] = React.useMemo(() => getSuggestions(value, SUGGESTION_LIMIT), [
+    const displayNamesInGen: string[] = React.useMemo(() => getSortedPokemonIdsReleasedInGen(currentGen), [currentGen]);
+    const suggestions: string[] = React.useMemo(() => getSuggestions(value, displayNamesInGen, SUGGESTION_LIMIT), [
         value,
+        displayNamesInGen,
     ]);
 
     return (
@@ -39,7 +42,9 @@ const PokemonAutoSuggestInput: React.FC<PokemonAutoSuggestInputProps> = ({
             suggestions={suggestions}
             getSuggestionValue={(name) => name}
             renderSuggestion={(name) => <span key={name}>{name}</span>}
-            onSuggestionSelected={(event, { suggestionValue }) => onSuggestionSelected(suggestionValue)}
+            onSuggestionSelected={(event, { suggestionValue }) =>
+                onSuggestionSelected(suggestionValue)
+            }
             onSuggestionsFetchRequested={() => {}}
             //@ts-ignore
             renderInputComponent={(props) => <input {...props} ref={inputRef} />}
@@ -49,18 +54,16 @@ const PokemonAutoSuggestInput: React.FC<PokemonAutoSuggestInputProps> = ({
     );
 };
 
-function getSuggestions(searchString: string, limit: number): string[] {
+function getSuggestions(searchString: string, displayNames: string[], limit: number): string[] {
     let suggestions: string[] = [];
     if (searchString) {
         searchString = displayNameToPokemonId(searchString);
-        const firstMatchingIndex = findFirstMatchingIndex(searchString, POKEMON_NAME_IDS);
+        const firstMatchingIndex = findFirstMatchingIndex(searchString, displayNames);
         if (firstMatchingIndex !== -1) {
-            const boundary = Math.min(firstMatchingIndex + limit, POKEMON_NAME_IDS.length);
-            for (let i = firstMatchingIndex; i < boundary; i++) { 
-                if (POKEMON_NAME_IDS[i].startsWith(searchString)) {
-                    suggestions.push(getPokemonDisplayNameByIndex(i));
-                }
-            }
+            suggestions = displayNames
+                .slice(firstMatchingIndex, firstMatchingIndex + limit)
+                .filter(pokemonId => pokemonId.startsWith(searchString))
+                .map(pokemonIdToDisplayName)
         }
     }
     return suggestions;
