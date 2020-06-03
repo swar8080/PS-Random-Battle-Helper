@@ -11,7 +11,8 @@
     "cleanup:ps": "rimraf src/pokemon-showdown-lib",
     "cleanup:build": "rimraf .aws-sam/build/PokemonSummaryEndpoint",
     "test": "npx jest",
-    "deploy": "npm run build && sam deploy",
+    "deploy": "npm run build && sam deploy --stack-name ps-battle-helper-stage",
+    "deploy:prod": "npm run build && sam deploy --stack-name ps-battle-helper-prod",
     "copy": "node scripts/copyDependenciesToLib.js"
   },
   "author": "",

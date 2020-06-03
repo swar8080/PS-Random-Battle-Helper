@@ -1,6 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: 'AWS::Serverless-2016-10-31'
 
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+    - stage
+    - prod
+
 Resources:
   PokemonSummaryEndpoint:
     Type: 'AWS::Serverless::Function'
@@ -20,7 +27,7 @@ Resources:
   ClientStaticResourcesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: pokemon-showdown-random-battle-helper
+      BucketName: !Sub pokemon-showdown-random-battle-helper-${Environment}
       AccessControl: PublicRead
       WebsiteConfiguration:
           IndexDocument: index.html
