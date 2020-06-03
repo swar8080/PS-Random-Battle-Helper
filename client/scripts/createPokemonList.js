@@ -21,7 +21,7 @@ const POKEDEX_JS_TEMP_PATH = path.resolve(TMP_DIR, "pokedex.js");
 const OUT_DATA_DIR = path.resolve(__dirname, "../src/data");
 const POKEMON_OUT_JSON_FILE = path.resolve(OUT_DATA_DIR, "pokemon.json");
 
-const POKEMON_NAME_BLACKLIST = /(-(Origin|Complete|10|Minior|Low-Key|Noice|Black|White|Antique|Ash|Large|Small|Super|Striped))|(^Pokestar.*)|(Pikachu-)|(Oricorio-)|(Type:)/;
+const POKEMON_NAME_BLACKLIST = /(-(Origin|Complete|10|Minior|Low-Key|Noice|Black|White|Antique|Ash|Large|Small|Super|Striped))|(^Pokestar.*)|(Pikachu-)|(Oricorio-)/;
 
 const SPRITE_BASE_DIR = path.resolve(__dirname, "../sprites");
 
