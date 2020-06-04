@@ -16,6 +16,7 @@ const AppHeader: React.FC<AppHeaderProps> = (props: AppHeaderProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View on Github"
+                tabIndex={-1}
             >
                 <img className="appheader__githubLogo" src="github-logo.png" alt="Github" />
             </a>
