@@ -6,7 +6,7 @@ import * as React from "react";
 const useAnalytics = () => {
     const isFirstSearch = React.useRef(true);
 
-    const trackSearchChange = (search: Client.PokemonSummarySearchInputs) => {
+    const trackSearchChange = (search: Common.PokemonSummarySearchInputs) => {
         if (!isFirstSearch.current){
             window.ga("send", {
                 hitType: "event",

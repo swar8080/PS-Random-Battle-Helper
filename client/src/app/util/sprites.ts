@@ -2,7 +2,7 @@
  * @prettier
  */
 
-import { getDisplayedTypeName, getSpriteOverrideForDisplayName } from "./pokemonMetadataUtil";
+import { getDisplayedTypeName, getSpriteOverrideForDisplayName } from "./showdownMetadataUtil";
 
 const BASE_SPRITE_URL =
     process.env.NODE_ENV === "production"

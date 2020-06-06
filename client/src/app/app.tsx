@@ -9,10 +9,10 @@ import useSavedSearch from "./useSavedSearch";
 import { useAnalytics } from "./useAnalytics";
 
 const App = () => {
-    const { savedSearch, saveSearch } = useSavedSearch();
+    const { initialSearch, saveSearch } = useSavedSearch();
     const { trackSearchChange } = useAnalytics();
 
-    const onSearchChange = (search: Client.PokemonSummarySearchInputs) => {
+    const onSearchChange = (search: Common.PokemonSummarySearchInputs) => {
         trackSearchChange(search);
         saveSearch(search);
     };
@@ -20,7 +20,7 @@ const App = () => {
     return (
         <>
             <AppHeader />
-            <PokemonSummary initialSearch={savedSearch} onSearchChange={onSearchChange} />
+            <PokemonSummary initialSearch={initialSearch} onSearchChange={onSearchChange} />
         </>
     );
 };

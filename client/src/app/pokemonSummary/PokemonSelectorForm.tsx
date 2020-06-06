@@ -2,33 +2,38 @@
  * @prettier
  */
 
-import * as React from "react";
-import { Formik } from "formik";
 import cn from "classnames";
-import "./PokemonSelectorForm.scss";
-import PokemonAutoSuggestInput from "./PokemonAutoSuggestInput";
-import { isValidPokemonDisplayName } from "../util/pokemonMetadataUtil";
+import { Formik } from "formik";
+import * as React from "react";
 import { onEnterKeyPressed } from "../util/keyboardUtil";
+import { isValidPokemonDisplayName } from "../util/showdownMetadataUtil";
+import PokemonAutoSuggestInput from "./PokemonAutoSuggestInput";
+import "./PokemonSelectorForm.scss";
 
 interface PokemonSelectorFormProps {
-    onSubmit: (inputs: PokemonSelectorFormInputs) => Promise<any>;
+    onSubmit: (inputs: Common.PokemonSummarySearchInputs) => Promise<any>;
     isLoading: boolean;
-    initialValues: PokemonSelectorFormInputs;
+    initialSearch: Common.PokemonSummarySearchInputs;
     lastSubmitResult: Client.APIResponseResult;
 }
 
 export type PokemonSelectorFormInputs = {
     pokemonName: string;
-    generation: Common.Generation;
+    format: BattleFormat;
     isLead: boolean;
 };
+
+const DOUBLES_FORMAT = "8-doubles";
+type BattleFormat = Common.Generation | "8-doubles";
+const getGenForFormat = (format: BattleFormat): Common.Generation =>
+    format === DOUBLES_FORMAT ? "8" : format;
 
 const DEFAULT_SUBMIT_ERR_MSG = "Error retrieving results";
 
 const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
     onSubmit,
     isLoading,
-    initialValues,
+    initialSearch,
     lastSubmitResult,
 }) => {
     const pokemonNameInputRef = React.useRef<HTMLInputElement>();
@@ -54,11 +59,26 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
         }
     }, []);
 
+    const initialFormInputs: PokemonSelectorFormInputs = {
+        ...initialSearch,
+        format:
+            initialSearch.generation === "8" && initialSearch.isDoubles
+                ? DOUBLES_FORMAT
+                : initialSearch.generation,
+    };
+
     return (
         <Formik
-            initialValues={initialValues}
+            initialValues={initialFormInputs}
             onSubmit={(values, { setSubmitting }) => {
-                onSubmit(values).then(() => {
+                const search: Common.PokemonSummarySearchInputs = {
+                    pokemonName: values.pokemonName,
+                    generation: getGenForFormat(values.format),
+                    isDoubles: values.format === DOUBLES_FORMAT,
+                    isLead: false,
+                };
+
+                onSubmit(search).then(() => {
                     setSubmitting(false);
 
                     //Reset the tab indexes. That way, if the user loses focus on the input, they can press tab to immediately re-select it
@@ -73,7 +93,8 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                 });
             }}
             children={({ values, handleSubmit, handleChange, setFieldValue, isSubmitting }) => {
-                const hasValidPokemon = isValidPokemonDisplayName(values.pokemonName, values.generation);
+                const gen: Common.Generation = getGenForFormat(values.format);
+                const hasValidPokemon = isValidPokemonDisplayName(values.pokemonName, gen);
                 const canSubmit: boolean = !isLoading && hasValidPokemon;
 
                 const getSubmitButtonTooltip = (): string => {
@@ -91,10 +112,10 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                 };
 
                 const submitIfEnterPressed = (event: React.KeyboardEvent) => {
-                    if (canSubmit){
+                    if (canSubmit) {
                         onEnterKeyPressed(event, handleSubmit);
                     }
-                }
+                };
 
                 return (
                     <div className="pokemonSelectorForm">
@@ -103,7 +124,7 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                             <div className="pokemonSelectorForm__nameInputContainer">
                                 <PokemonAutoSuggestInput
                                     value={values.pokemonName}
-                                    currentGen={values.generation}
+                                    currentGen={gen}
                                     handleChange={handleChange}
                                     onSuggestionSelected={handleSuggestionSelected}
                                     inputProps={{
@@ -118,19 +139,22 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                             <div>
                                 <label>Format:</label>
                                 <select
-                                    name="generation"
-                                    value={values.generation}
+                                    name="format"
+                                    value={values.format}
                                     onChange={handleChange}
                                     className="pokemonSelectorForm-input"
                                 >
-                                    <option value="1">Gen 1 Random Battle</option>
-                                    <option value="2">Gen 2 Random Battle</option>
-                                    <option value="3">Gen 3 Random Battle</option>
-                                    <option value="4">Gen 4 Random Battle</option>
-                                    <option value="5">Gen 5 Random Battle</option>
-                                    <option value="6">Gen 6 Random Battle</option>
-                                    <option value="7">Gen 7 Random Battle</option>
                                     <option value="8">Gen 8 Random Battle</option>
+                                    <option value={DOUBLES_FORMAT}>
+                                        Gen 8 Random Doubles Battle
+                                    </option>
+                                    <option value="7">Gen 7 Random Battle</option>
+                                    <option value="6">Gen 6 Random Battle</option>
+                                    <option value="5">Gen 5 Random Battle</option>
+                                    <option value="4">Gen 4 Random Battle</option>
+                                    <option value="3">Gen 3 Random Battle</option>
+                                    <option value="2">Gen 2 Random Battle</option>
+                                    <option value="1">Gen 1 Random Battle</option>
                                 </select>
                             </div>
                             <button

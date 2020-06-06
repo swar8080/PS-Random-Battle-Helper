@@ -6,7 +6,7 @@ import * as React from "react";
 import "./move-type-backgrounds.css";
 import "./PokemonMovesets.scss";
 import { getMoveEffectTypeSpriteUrl, getTypeLabelSpriteUrl } from "../util/sprites";
-import { getDisplayedTypeName } from "../util/pokemonMetadataUtil";
+import { getDisplayedTypeName } from "../util/showdownMetadataUtil";
 
 interface PokemonMovesetsProps {
     moveOccurences: Common.MovesWithOccurences;

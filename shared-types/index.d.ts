@@ -52,6 +52,13 @@ declare namespace Common {
     baseStats: BaseStats;
   };
 
+  type PokemonSummarySearchInputs = {
+    pokemonName: string,
+    generation: Common.Generation,
+    isDoubles: boolean,
+    isLead: boolean
+  }
+
   type APIResponse<T> = {
     data: T;
     successful: boolean;

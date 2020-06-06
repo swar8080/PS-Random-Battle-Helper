@@ -1,15 +1,21 @@
+/**
+ * @prettier
+ */
+
+import qs from "qs";
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 interface API {
     getPokemonSummary(
-        pokemonName: string,
-        gen: Common.Generation
+        search: Common.PokemonSummarySearchInputs
     ): Promise<Common.APIResponse<Common.PokemonSummary>>;
 }
 
 const api: API = {
-    getPokemonSummary: (pokemonName: string, gen: Common.Generation) => {
-        const requestUrl: string = `${API_URL}?pokemonName=${pokemonName}&gen=${gen}`;
+    getPokemonSummary: (search) => {
+        const searchParams = qs.stringify(search, { addQueryPrefix: false });
+        const requestUrl: string = `${API_URL}?${searchParams}`;
         return fetch(requestUrl).then((response) => response.json());
     },
 };

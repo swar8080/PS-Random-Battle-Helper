@@ -42,6 +42,10 @@ export function isValidGen(gen: string){
     return VALID_GENS.has(gen);
 }
 
+export function isDoublesValid(gen: string, isDoubles: string | boolean | undefined){
+    return gen === "8" && String(isDoubles) === 'true';
+}
+
 export function getDisplayedTypeName(typeName: string){
     //treat moves like curse which have ??? type as ghost
     return typeName !== "???"? typeName : "Ghost";

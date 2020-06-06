@@ -2,24 +2,24 @@
  * @prettier
  */
 
-import React, { useEffect, useReducer } from "react";
 import cn from "classnames";
-import PokemonSelectorForm, { PokemonSelectorFormInputs } from "./PokemonSelectorForm";
-import PokemonSummaryHeading from "./PokemonSummaryHeading";
-import PokemonMovesets from "./PokemonMovesets";
-import PokemonItems from "./PokemonItems";
-import PokemonAbilities from "./PokemonAbilities";
-import PokemonStats from "./PokemonStats";
-import PokemonTypeEffectivness from "./PokemonTypeEffectivness";
+import React, { useEffect, useReducer } from "react";
 import Api from "../../api";
-import "./PokemonSummary.scss";
-import "./common.scss";
-import "./spinner.css";
 import { trackException } from "../useAnalytics";
+import "./common.scss";
+import PokemonAbilities from "./PokemonAbilities";
+import PokemonItems from "./PokemonItems";
+import PokemonMovesets from "./PokemonMovesets";
+import PokemonSelectorForm from "./PokemonSelectorForm";
+import PokemonStats from "./PokemonStats";
+import "./PokemonSummary.scss";
+import PokemonSummaryHeading from "./PokemonSummaryHeading";
+import PokemonTypeEffectivness from "./PokemonTypeEffectivness";
+import "./spinner.css";
 
 export interface PokemonSummaryProps {
-    initialSearch: Client.PokemonSummarySearchInputs;
-    onSearchChange?: (search: Client.PokemonSummarySearchInputs) => void;
+    initialSearch: Common.PokemonSummarySearchInputs;
+    onSearchChange?: (search: Common.PokemonSummarySearchInputs) => void;
 }
 
 type PokemonSummaryWithGeneration = Common.PokemonSummary & { generation: Common.Generation };
@@ -71,19 +71,19 @@ const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearch
         }
     }, [initialSearch]);
 
-    const loadPokemonSummary = (inputs: PokemonSelectorFormInputs) => {
+    const loadPokemonSummary = (search: Common.PokemonSummarySearchInputs) => {
         dispatch({ type: "loadingSummary" });
-        return Api.getPokemonSummary(inputs.pokemonName, inputs.generation)
+        return Api.getPokemonSummary(search)
             .then((res) => {
                 if (res.successful) {
                     dispatch({
                         type: "loadedSummary",
                         pokemonSummary: {
                             ...res.data,
-                            generation: inputs.generation,
+                            generation: search.generation,
                         },
                     });
-                    onSearchChange && onSearchChange(inputs);
+                    onSearchChange && onSearchChange(search);
                 } else {
                     dispatch({
                         type: "loadingSummaryError",
@@ -104,7 +104,7 @@ const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearch
                     onSubmit={loadPokemonSummary}
                     isLoading={state.isLoading}
                     lastSubmitResult={state.lastSubmitResult}
-                    initialValues={initialSearch}
+                    initialSearch={initialSearch}
                 />
             </div>
             <div

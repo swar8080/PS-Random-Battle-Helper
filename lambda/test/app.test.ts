@@ -12,12 +12,14 @@ describe("Pokemon Summary Endpoint", () => {
 
     const runHandler = async (
         pokemonName: string,
-        gen: Common.Generation
+        generation: Common.Generation,
+        isDoubles: boolean = false,
+        isLead: boolean = false
     ): Promise<Common.PokemonSummary> => {
         const apiResponse = await lambdaHandler({
             queryStringParameters: {
                 pokemonName,
-                gen,
+                generation,
             },
         });
         const response: Common.APIResponse<Common.PokemonSummary> = JSON.parse(apiResponse.body);
@@ -26,24 +28,59 @@ describe("Pokemon Summary Endpoint", () => {
         return response.data;
     };
 
-    //handles some random set generators requiring Dex to be available as a global
-    test("Gen 7 pokemon without a random move pool", async () => {
-        return await runHandler("Golbat", "7");
-    });
+    describe("different generations", () => {
+        test("Gen 1", async () => {
+            await runHandler("Gengar", "1");
+            return await runHandler("Gengar", "1", true, true);
+        });
 
-    //handles random set generator for gen 2 has a different method signature
-    test("Gen 2 pokemon", async () => {
-        return await runHandler("Gengar", "2");
+        //handles random set generator for gen 2 has a different method signature
+        test("Gen 2", async () => {
+            await runHandler("Gengar", "2");
+            return await runHandler("Gengar", "2", true, true);
+        });
+
+        test("Gen 3", async () => {
+            await runHandler("Gengar", "3");
+            return await runHandler("Gengar", "3", true, true);
+        });
+
+        test("Gen 4", async () => {
+            await runHandler("Gengar", "4");
+            return await runHandler("Gengar", "4", true, true);
+        });
+
+        test("Gen 5", async () => {
+            await runHandler("Gengar", "5");
+            return await runHandler("Gengar", "5", true, true);
+        });
+
+        test("Gen 6", async () => {
+            await runHandler("Gengar", "6");
+            return await runHandler("Gengar", "6", true, true);
+        });
+        
+        test("Gen 7", async () => {
+            await runHandler("Gengar", "7");
+            return await runHandler("Gengar", "7", true, true);
+        });
+
+        test("Gen 8", async () => {
+            await runHandler("Gengar", "8");
+            return await runHandler("Gengar", "8", true, true);
+        });
     });
 
     describe("Pokemon formes", () => {
-        test('mega', async () => {
-            const megaX: Common.PokemonSummary = await runHandler("Mewtwo-Mega-X", "8");    
+        test("mega", async () => {
+            const megaX: Common.PokemonSummary = await runHandler("Mewtwo-Mega-X", "8");
             expect(megaX.displayName).toBe("Mewtwo-Mega-X");
             expect(megaX.type1).toBe("Psychic");
             expect(megaX.type2).toBe("Fighting");
             expect(megaX.baseStats.atk).toBe(190);
-            expect(megaX.simulationResult.abilityOccurences[0].abilityDisplayName).toBe("Steadfast");
+            expect(megaX.simulationResult.abilityOccurences[0].abilityDisplayName).toBe(
+                "Steadfast"
+            );
             expect(megaX.simulationResult.itemOccurences[0].itemDisplayName).toBe("Mewtwonite X");
 
             const base: Common.PokemonSummary = await runHandler("Mewtwo", "8");
@@ -51,17 +88,23 @@ describe("Pokemon Summary Endpoint", () => {
             expect(base.type1).toBe("Psychic");
             expect(base.type2).toBeNull();
             expect(base.baseStats.atk).toBe(110);
-            expect(base.simulationResult.abilityOccurences[0].abilityDisplayName).not.toBe("Steadfast");
-            expect(base.simulationResult.itemOccurences[0].itemDisplayName).not.toBe("Mewtwonite X");
+            expect(base.simulationResult.abilityOccurences[0].abilityDisplayName).not.toBe(
+                "Steadfast"
+            );
+            expect(base.simulationResult.itemOccurences[0].itemDisplayName).not.toBe(
+                "Mewtwonite X"
+            );
         });
 
-        test('primal', async () => {
+        test("primal", async () => {
             const primal: Common.PokemonSummary = await runHandler("Groudon-Primal", "8");
             expect(primal.displayName).toBe("Groudon-Primal");
             expect(primal.type1).toBe("Ground");
             expect(primal.type2).toBe("Fire");
             expect(primal.baseStats.atk).toBe(180);
-            expect(primal.simulationResult.abilityOccurences[0].abilityDisplayName).toBe("Desolate Land");
+            expect(primal.simulationResult.abilityOccurences[0].abilityDisplayName).toBe(
+                "Desolate Land"
+            );
             expect(primal.simulationResult.itemOccurences[0].itemDisplayName).toBe("Red Orb");
 
             const base: Common.PokemonSummary = await runHandler("Groudon", "8");
@@ -69,17 +112,19 @@ describe("Pokemon Summary Endpoint", () => {
             expect(base.type1).toBe("Ground");
             expect(base.type2).toBeNull();
             expect(base.baseStats.atk).toBe(150);
-            expect(base.simulationResult.abilityOccurences[0].abilityDisplayName).not.toBe("Desolate Land");
+            expect(base.simulationResult.abilityOccurences[0].abilityDisplayName).not.toBe(
+                "Desolate Land"
+            );
             expect(base.simulationResult.itemOccurences[0].itemDisplayName).not.toBe("Red Orb");
         });
 
-        test('gmax', async () => {
+        test("gmax", async () => {
             const gmax = await runHandler("Meowth-Gmax", "8");
-        })
+        });
 
-        test('galar', async () => {
+        test("galar", async () => {
             const gmax = await runHandler("Zigzagoon-Galar", "8");
-        })
+        });
     });
 
     describe("type effectiveness", () => {
@@ -126,25 +171,27 @@ describe("Pokemon Summary Endpoint", () => {
         const apiResponse = await lambdaHandler({
             queryStringParameters: {
                 pokemonName: "Charizard-Gmax",
-                gen: "8"
+                generation: "8",
             },
         });
         const response: Common.APIResponse<Common.PokemonSummary> = JSON.parse(apiResponse.body);
 
         expect(response.successful).toBe(false);
-        expect(response.errorMsg).toBe("Simulation results are unavailable for this pokemon and/or generation");
-    })
+        expect(response.errorMsg).toBe(
+            "Simulation results are unavailable for this pokemon and/or format"
+        );
+    });
 
     test("Unexpected error", async () => {
         const apiResponse = await lambdaHandler({
             queryStringParameters: {
                 pokemonName: "invalid",
-                gen: "100"
+                gen: "100",
             },
         });
         const response: Common.APIResponse<Common.PokemonSummary> = JSON.parse(apiResponse.body);
 
         expect(response.successful).toBe(false);
         expect(response.errorMsg).toBeUndefined();
-    })
+    });
 });

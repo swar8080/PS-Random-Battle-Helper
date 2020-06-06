@@ -2,10 +2,10 @@
  * @prettier
  */
 import { Dex } from "./pokemon-showdown-lib/sim";
-import { getRandomSetGenerator, RandomSetGenerator } from "./RandomSetGenerator";
+import { generateMovesets } from "./RandomSetGenerator";
 import CustomError from "./customError";
 
-type RequestParams = { gen?: Common.Generation; pokemonName?: string } | null;
+type RequestParams = Partial<Common.PokemonSummarySearchInputs>;
 
 const SET_COUNT_DEFAULT = "100";
 const SET_COUNT = parseInt(process.env.SET_COUNT || SET_COUNT_DEFAULT);
@@ -17,16 +17,27 @@ exports.lambdaHandler = async (
     let res: Common.APIResponse<Common.PokemonSummary>;
     try {
         const params: RequestParams = event.queryStringParameters;
-        console.log(params.pokemonName, params.gen);
-        const pokemonSummary = getPokemonSummary(params.pokemonName, params.gen);
-        res = {
-            successful: true,
-            data: pokemonSummary,
-        };
+
+        if (params.pokemonName && params.generation) {
+            const search: Common.PokemonSummarySearchInputs = {
+                pokemonName: params.pokemonName,
+                generation: params.generation,
+                isDoubles: String(params.isDoubles) === "true",
+                isLead: String(params.isLead) === "true",
+            };
+            const pokemonSummary = getPokemonSummary(search);
+
+            res = {
+                successful: true,
+                data: pokemonSummary,
+            };
+        } else {
+            throw new Error("Invalid parameters");
+        }
     } catch (err) {
         console.log(err);
         res = { successful: false, data: undefined };
-        if (err instanceof CustomError){
+        if (err instanceof CustomError) {
             res.errorMsg = err.message;
         }
     }
@@ -38,16 +49,11 @@ exports.lambdaHandler = async (
     };
 };
 
-function getPokemonSummary(pokemonName: string, gen: Common.Generation): Common.PokemonSummary {
-    const metadata: ModdedDex = Dex.forGen(parseInt(gen));
+function getPokemonSummary(search: Common.PokemonSummarySearchInputs): Common.PokemonSummary {
+    const metadata: ModdedDex = Dex.forGen(parseInt(search.generation));
 
-    const sets: RandomTeamsTypes.RandomSet[] = generateMoveSets(
-        pokemonName,
-        gen,
-        SET_COUNT,
-        metadata
-    );
-    const species: Species = metadata.getSpecies(pokemonName);
+    const sets: RandomTeamsTypes.RandomSet[] = generateMovesets(search, metadata, SET_COUNT);
+    const species: Species = metadata.getSpecies(search.pokemonName);
 
     const summary: Common.PokemonSummary = {
         displayName: species.name,
@@ -64,16 +70,6 @@ function getPokemonSummary(pokemonName: string, gen: Common.Generation): Common.
     };
 
     return summary;
-}
-
-function generateMoveSets(
-    pokemonName: string,
-    gen: Common.Generation,
-    setCount: number,
-    metadata: ModdedDex
-): RandomTeamsTypes.RandomSet[] {
-    const randomSetGenerator: RandomSetGenerator = getRandomSetGenerator(gen);
-    return randomSetGenerator.generateSets(metadata, gen, pokemonName, setCount);
 }
 
 function getMoveOccurences(
@@ -103,28 +99,27 @@ function getAbilityOccurences(
     metadata: ModdedDex,
     species: Species
 ): Common.AbilityOccurence[] {
-    if (species.isMega || species.isPrimal){
+    if (species.isMega || species.isPrimal) {
         //simulation results are for the base species, so need to explicitly handle different formes' abilities
         const formeAbility = metadata.getAbility(species.abilities[0]);
         return [
             {
                 abilityDisplayName: formeAbility.name,
                 description: formeAbility.desc || formeAbility.shortDesc,
-                occurences: SET_COUNT
-            }
-        ]
-    }
-    else {
+                occurences: SET_COUNT,
+            },
+        ];
+    } else {
         return getOccurenceCounts(sets, (set) => [set.ability])
-        .map(([abilityId, occurences]) => {
-            const ability = metadata.getAbility(abilityId);
-            return {
-                abilityDisplayName: ability.name,
-                description: ability.desc || ability.shortDesc,
-                occurences,
-            };
-        })
-        .sort(sortByOccurencesDesc);   
+            .map(([abilityId, occurences]) => {
+                const ability = metadata.getAbility(abilityId);
+                return {
+                    abilityDisplayName: ability.name,
+                    description: ability.desc || ability.shortDesc,
+                    occurences,
+                };
+            })
+            .sort(sortByOccurencesDesc);
     }
 }
 

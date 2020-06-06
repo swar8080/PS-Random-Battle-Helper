@@ -5,93 +5,80 @@
 import { PRNG } from "./pokemon-showdown-lib/sim";
 import { RandomTeams } from "./pokemon-showdown-lib/.data-dist/random-teams";
 import RandomGen2Teams from "./pokemon-showdown-lib/.data-dist/mods/gen2/random-teams";
-import CustomError from './customError';
+import CustomError from "./customError";
 
-export interface RandomSetGenerator {
-    generateSets: (
-        dex: ModdedDex,
-        gen: Common.Generation,
-        pokemonName: string,
-        setCount: number
-    ) => RandomTeamsTypes.RandomSet[];
-}
+type RandomSetGenerator = () => RandomTeamsTypes.RandomSet;
 
-export function getRandomSetGenerator(gen: Common.Generation): RandomSetGenerator {
-    if (gen === "2") {
-        return Gen2RandomSetGenerator;
+export function generateMovesets(
+    { pokemonName, generation, isDoubles, isLead }: Common.PokemonSummarySearchInputs,
+    dex: ModdedDex,
+    setCount: number
+): RandomTeamsTypes.RandomSet[] {
+    const species: Species = getElligibleSpeciesForMoveGeneration(dex, pokemonName);
+    
+    let randomSetGenerator: RandomSetGenerator;
+    if (generation === "8") {
+        randomSetGenerator = getGen8SetGenerator(species, isDoubles, isLead, dex);
+    } else if (generation === "2") {
+        randomSetGenerator = getGen2SetGenerator(species, dex);
     } else {
-        return DefaultRandomSetGenerator;
+        randomSetGenerator = getGeneratorForGenaration(species, generation, isLead, dex);
     }
+
+    const sets: RandomTeamsTypes.RandomSet[] = [];
+    try {
+        runWithGlobalDex(dex, () => {
+            for (let i = 0; i < setCount; i++) {
+                sets.push(randomSetGenerator());
+            }
+        });
+    } catch (err) {
+        console.log("Error generating simulation results", err);
+        throw new CustomError(
+            "Simulation results are unavailable for this pokemon and/or format"
+        );
+    }
+
+    return sets;
 }
 
-const DefaultRandomSetGenerator: RandomSetGenerator = {
-    generateSets: (
-        dex: ModdedDex,
-        gen: Common.Generation,
-        pokemonName: string,
-        setCount: number
-    ) => {
-        const formatName = getFormatName(gen);
-        const teamGenerator = dex.getTeamGenerator(formatName, new PRNG()) as RandomTeams;
-        const species: Species = getElligibleSpeciesForMoveGeneration(dex, pokemonName);
+function getGen8SetGenerator(
+    species: Species,
+    isDoubles: boolean,
+    isLead: boolean,
+    dex: ModdedDex
+): RandomSetGenerator {
+    const formatName = getFormatName("8");
+    const teamGenerator = dex.getTeamGenerator(formatName, new PRNG()) as RandomTeams;
+    return () => teamGenerator.randomSet(species, {}, isLead, isDoubles);
+}
 
-        const sets: RandomTeamsTypes.RandomSet[] = [];
+function getGen2SetGenerator(species: Species, dex: ModdedDex): RandomSetGenerator {
+    const formatName = getFormatName("2");
+    const teamGenerator = dex.getTeamGenerator(formatName, new PRNG()) as RandomGen2Teams;
 
-        try {
-            runWithGlobalDex(dex, () => {
-                for (let i = 0; i < setCount; i++) {
-                    sets.push(teamGenerator.randomSet(species));
-                }
-            });
-        }
-        catch (err){
-            console.log("Error generating simulation results", err);
-            throw new CustomError("Simulation results are unavailable for this pokemon and/or generation")
-        }
+    const restrictMoves = {};
+    return () => teamGenerator.randomSet(species, restrictMoves);
+}
 
-        return sets;
-    },
-};
-
-//Gen 2 has a different method signature that expected a {string:boolean} restrict moves object
-const Gen2RandomSetGenerator: RandomSetGenerator = {
-    generateSets: (
-        dex: ModdedDex,
-        gen: Common.Generation,
-        pokemonName: string,
-        setCount: number
-    ) => {
-        const formatName = getFormatName("2");
-        const teamGenerator = dex.getTeamGenerator(formatName, new PRNG()) as RandomGen2Teams;
-        const species: Species = getElligibleSpeciesForMoveGeneration(dex, pokemonName);
-
-        const sets: RandomTeamsTypes.RandomSet[] = [];
-        const restrictMoves = {};
-
-        try {
-            runWithGlobalDex(dex, () => {
-                for (let i = 0; i < setCount; i++) {
-                    sets.push(teamGenerator.randomSet(species, restrictMoves));
-                }
-            });
-        }
-        catch (err){
-            console.log("Error generating simulation results", err);
-            throw new CustomError("Simulation results are unavailable for this pokemon and/or generation")
-        }
-
-
-        return sets;
-    },
-};
+function getGeneratorForGenaration(
+    species: Species,
+    generation: Common.Generation,
+    isLead: boolean,
+    dex: ModdedDex
+): RandomSetGenerator {
+    const formatName = getFormatName(generation);
+    const teamGenerator = dex.getTeamGenerator(formatName, new PRNG()) as RandomTeams;
+    return () => teamGenerator.randomSet(species, {}, isLead);
+}
 
 function getFormatName(gen: Common.Generation) {
     return `gen${gen}randombattle`;
 }
 
-function getElligibleSpeciesForMoveGeneration(dex: ModdedDex, pokemonName: string): Species{
-    let species = dex.getSpecies(pokemonName)
-    if (species.isMega || species.isPrimal){
+function getElligibleSpeciesForMoveGeneration(dex: ModdedDex, pokemonName: string): Species {
+    let species = dex.getSpecies(pokemonName);
+    if (species.isMega || species.isPrimal) {
         species = dex.getSpecies(species.baseSpecies);
     }
     return species;
@@ -100,7 +87,11 @@ function getElligibleSpeciesForMoveGeneration(dex: ModdedDex, pokemonName: strin
 //Some RandomTeams implementation rely on a global Dex variable to be available
 function runWithGlobalDex(dex: ModdedDex, runnable: Function) {
     const currentGlobal = global.Dex;
-    global.Dex = dex;
-    runnable();
-    global.Dex = currentGlobal;
+    try {
+        global.Dex = dex;
+        runnable();
+    }
+    finally {
+        global.Dex = currentGlobal;
+    }
 }
