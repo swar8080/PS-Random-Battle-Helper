@@ -22,16 +22,16 @@ export interface PokemonSummaryProps {
     onSearchChange?: (search: Common.PokemonSummarySearchInputs) => void;
 }
 
-type PokemonSummaryWithGeneration = Common.PokemonSummary & { generation: Common.Generation };
 type State = {
-    pokemonSummary?: PokemonSummaryWithGeneration;
+    currentSearch: Common.PokemonSummarySearchInputs;
+    pokemonSummary?: Common.PokemonSummary;
     isLoading: boolean;
     lastSubmitResult: Client.APIResponseResult;
 };
 
 type Action =
     | { type: "loadingSummary" }
-    | { type: "loadedSummary"; pokemonSummary: PokemonSummaryWithGeneration }
+    | { type: "loadedSummary"; pokemonSummary: Common.PokemonSummary, currentSearch: Common.PokemonSummarySearchInputs }
     | { type: "loadingSummaryError"; errorMsg?: string };
 
 function reducer(state: State, action: Action): State {
@@ -44,6 +44,7 @@ function reducer(state: State, action: Action): State {
         case "loadedSummary":
             return {
                 ...state,
+                currentSearch: action.currentSearch,
                 pokemonSummary: action.pokemonSummary,
                 isLoading: false,
                 lastSubmitResult: { successful: true },
@@ -61,6 +62,7 @@ function reducer(state: State, action: Action): State {
 
 const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearchChange }) => {
     const [state, dispatch] = useReducer(reducer, {
+        currentSearch: initialSearch,
         isLoading: true,
         lastSubmitResult: { successful: true },
     });
@@ -78,10 +80,8 @@ const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearch
                 if (res.successful) {
                     dispatch({
                         type: "loadedSummary",
-                        pokemonSummary: {
-                            ...res.data,
-                            generation: search.generation,
-                        },
+                        pokemonSummary: res.data,
+                        currentSearch: search
                     });
                     onSearchChange && onSearchChange(search);
                 } else {
@@ -118,7 +118,8 @@ const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearch
                         <div className="pokemonSummary__heading">
                             <PokemonSummaryHeading
                                 pokemonDisplayName={state.pokemonSummary.displayName}
-                                generation={state.pokemonSummary.generation}
+                                generation={state.currentSearch.generation}
+                                isDoubles={state.currentSearch.isDoubles}
                             />
                         </div>
                         <div className="pokemonSummary__data">
