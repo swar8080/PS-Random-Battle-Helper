@@ -43,6 +43,7 @@ $sectionSpacing: 0.5rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    align-items: flex-start;
 
     //2 units of spacing on the first line, 1 unit when wrap to the next line
     margin: $sectionSpacing 0 $sectionSpacing 0;

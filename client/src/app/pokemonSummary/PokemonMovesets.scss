@@ -15,11 +15,13 @@
     }
 }
 
-.movesets__moveset {
+.movesets__movesetRow {
     display: flex;
     justify-content: center;
     align-items: center;
+    
     padding: 0.25rem 0;
+    cursor: help;
 }
 
 .movesets__moveOccurrences {
@@ -30,6 +32,9 @@
 
 .movesets__moveDetails {
     width: 50%;
+}
+
+.movesets__mainDetails {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -45,4 +50,17 @@
 
 .movesets__moveName {
     text-align: center;
+}
+
+.movesets__additionalDetails {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    font-size: (10/16)*1rem;
+    color: grey;
+    user-select: none;
+    > * {
+        padding: 0.05rem 0.2rem 0 0.2rem;
+    }
 }

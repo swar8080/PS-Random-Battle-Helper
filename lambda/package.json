@@ -7,6 +7,7 @@
     "tsc": "tsc",
     "build": "npm run cleanup:build && tsc -p tsconfig.prod.json",
     "watch": "tsc-watch",
+    "debug-api": "sam local start-api -d 5858",
     "cleanup": "npm run cleanup:ps && npm run cleanup:build",
     "cleanup:ps": "rimraf src/pokemon-showdown-lib",
     "cleanup:build": "rimraf .aws-sam/build/PokemonSummaryEndpoint",

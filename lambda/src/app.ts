@@ -75,7 +75,7 @@ function getPokemonSummary(search: Common.PokemonSummarySearchInputs): Common.Po
 function getMoveOccurences(
     sets: RandomTeamsTypes.RandomSet[],
     metadata: ModdedDex
-): Common.MovesWithOccurences {
+): Common.MoveWithOccurences[] {
     //remove duplicates for pokemon that can have less than 4 moves
     const extractUniqueMoveKeysFromSet = (set: RandomTeamsTypes.RandomSet) =>
         Array.from(new Set(set.moves));
@@ -83,13 +83,23 @@ function getMoveOccurences(
     return getOccurenceCounts(sets, extractUniqueMoveKeysFromSet)
         .map(([moveId, occurences]) => {
             const move = metadata.getMove(moveId);
-            return {
+            
+            const moveData: Common.MoveWithOccurences = {
                 name: move.name,
                 moveType: move.type,
                 description: move.desc || move.shortDesc,
                 effectType: move.category,
+                pp: move.pp,
                 occurences,
             };
+            if (move.category !== "Status"){
+                moveData.damage = move.basePower;
+            }
+            if (move.accuracy !== true){
+                moveData.accuracy= move.accuracy;
+            }
+
+            return moveData;
         })
         .sort(sortByOccurencesDesc);
 }

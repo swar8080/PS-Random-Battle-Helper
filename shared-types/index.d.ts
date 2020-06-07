@@ -11,6 +11,9 @@ declare namespace Common {
     moveType: string;
     effectType: MoveEffectType;
     description: string;
+    damage?: number,
+    accuracy?: number,
+    pp: number
   };
 
   type TypeEffectiveness = 0.25 | 0.5 | 0 | 1 | 2 | 4;
@@ -24,7 +27,7 @@ declare namespace Common {
     hp: number;
   };
 
-  type MovesWithOccurences = (Move & { occurences: number })[];
+  type MoveWithOccurences = (Move & { occurences: number })
 
   type ItemOccurence = {
     itemDisplayName: string;
@@ -43,7 +46,7 @@ declare namespace Common {
     type1: string;
     type2?: string;
     simulationResult: {
-      moveOccurrences: MovesWithOccurences;
+      moveOccurrences: MoveWithOccurences[];
       itemOccurences: ItemOccurence[];
       abilityOccurences: AbilityOccurence[];
       setsGenerated: number;

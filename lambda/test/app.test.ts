@@ -20,6 +20,8 @@ describe("Pokemon Summary Endpoint", () => {
             queryStringParameters: {
                 pokemonName,
                 generation,
+                isDoubles,
+                isLead
             },
         });
         const response: Common.APIResponse<Common.PokemonSummary> = JSON.parse(apiResponse.body);
@@ -166,6 +168,15 @@ describe("Pokemon Summary Endpoint", () => {
             expect(result.typeEffectiveness[0]).toEqual(expect.not.arrayContaining(["sandstorm"]));
         });
     });
+
+    describe("Move metadata", () => {
+        test('move without damage or accuracy', async () => {
+            const result = await runHandler("Ditto", "1");
+            expect(result.simulationResult.moveOccurrences[0].damage).toBeUndefined();
+            expect(result.simulationResult.moveOccurrences[0].accuracy).toBeUndefined();
+            expect(result.simulationResult.moveOccurrences[0].pp).toBe(10);
+        })
+    })
 
     test("Error when simulation results unavailable for pokemon", async () => {
         const apiResponse = await lambdaHandler({
