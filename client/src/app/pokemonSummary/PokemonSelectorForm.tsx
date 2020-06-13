@@ -6,7 +6,7 @@ import cn from "classnames";
 import { Formik } from "formik";
 import * as React from "react";
 import { onEnterKeyPressed } from "../util/keyboardUtil";
-import { isValidPokemonDisplayName } from "../util/showdownMetadataUtil";
+import { isValidPokemonDisplayName, doesLeadAffectSimulation } from "../util/showdownMetadataUtil";
 import PokemonAutoSuggestInput from "./PokemonAutoSuggestInput";
 import "./PokemonSelectorForm.scss";
 
@@ -71,11 +71,12 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
         <Formik
             initialValues={initialFormInputs}
             onSubmit={(values, { setSubmitting }) => {
+                const generation: Common.Generation = getGenForFormat(values.format);
                 const search: Common.PokemonSummarySearchInputs = {
                     pokemonName: values.pokemonName,
-                    generation: getGenForFormat(values.format),
+                    generation: generation,
                     isDoubles: values.format === DOUBLES_FORMAT,
-                    isLead: false,
+                    isLead: doesLeadAffectSimulation(generation) && values.isLead,
                 };
 
                 onSubmit(search).then(() => {
@@ -96,6 +97,7 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                 const gen: Common.Generation = getGenForFormat(values.format);
                 const hasValidPokemon = isValidPokemonDisplayName(values.pokemonName, gen);
                 const canSubmit: boolean = !isLoading && hasValidPokemon;
+                const hasLeadOption: boolean = doesLeadAffectSimulation(gen);
 
                 const getSubmitButtonTooltip = (): string => {
                     return !hasValidPokemon && !isLoading ? "Enter a valid pokemon name" : "";
@@ -157,6 +159,21 @@ const PokemonSelectorForm: React.FC<PokemonSelectorFormProps> = ({
                                     <option value="1">Gen 1 Random Battle</option>
                                 </select>
                             </div>
+                            {hasLeadOption && (
+                                <div
+                                    className="pokemonSelectorForm__leadContainer pokemonSelectorForm-input"
+                                    title="Lead Pokemon in Team"
+                                >
+                                    <label>Lead?</label>
+                                    <input
+                                        type="checkbox"
+                                        name="isLead"
+                                        checked={values.isLead}
+                                        onChange={handleChange}
+                                        className="pokemonSelectorForm__leadCheckbox"
+                                    />
+                                </div>
+                            )}
                             <button
                                 onClick={() => handleSubmit()}
                                 disabled={!canSubmit}

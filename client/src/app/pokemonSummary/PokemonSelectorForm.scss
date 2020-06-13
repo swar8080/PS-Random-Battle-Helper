@@ -1,5 +1,6 @@
 .pokemonSelectorForm {
     width: 100%;
+    font-size: 14px;
 }
 
 .pokemonSelectorForm__inputs {
@@ -16,6 +17,25 @@
 
 .pokemonSelectorForm-input {
     margin: 0 0.5rem 0 0.1rem;
+}
+
+.pokemonSelectorForm__leadContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    margin-top: 0.25rem;
+
+    label {
+        cursor: help;
+    }
+}
+
+.pokemonSelectorForm__leadCheckbox {
+    position: relative;
+    top: 0.1rem;
+    margin: 0;
+    height: 10px;
 }
 
 .pokemonSelectorForm__submitButton--invalidPokemon:not(.pokemonSelectorForm__submitButton--loading) {

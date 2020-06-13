@@ -31,7 +31,11 @@ type State = {
 
 type Action =
     | { type: "loadingSummary" }
-    | { type: "loadedSummary"; pokemonSummary: Common.PokemonSummary, currentSearch: Common.PokemonSummarySearchInputs }
+    | {
+          type: "loadedSummary";
+          pokemonSummary: Common.PokemonSummary;
+          currentSearch: Common.PokemonSummarySearchInputs;
+      }
     | { type: "loadingSummaryError"; errorMsg?: string };
 
 function reducer(state: State, action: Action): State {
@@ -81,7 +85,7 @@ const PokemonSummary: React.FC<PokemonSummaryProps> = ({ initialSearch, onSearch
                     dispatch({
                         type: "loadedSummary",
                         pokemonSummary: res.data,
-                        currentSearch: search
+                        currentSearch: search,
                     });
                     onSearchChange && onSearchChange(search);
                 } else {

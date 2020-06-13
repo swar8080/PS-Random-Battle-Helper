@@ -4,13 +4,18 @@
 
 import * as React from "react";
 import qs from "qs";
-import { isValidPokemonDisplayName, isValidGen, isDoublesValid } from "./util/showdownMetadataUtil";
+import {
+    isValidPokemonDisplayName,
+    isValidGen,
+    isDoublesValid,
+    doesLeadAffectSimulation,
+} from "./util/showdownMetadataUtil";
 
 type SearchUrlParams = {
     pokemon?: string;
     gen?: Common.Generation;
-    doubles?: boolean,
-    lead?: boolean
+    doubles?: boolean;
+    lead?: boolean;
 };
 const SEARCH_STORAGE_KEY = "pokemonshowdown-random-battle-helper__search";
 const DEFAULT_SEARCH: Common.PokemonSummarySearchInputs = {
@@ -48,7 +53,7 @@ function getUrlParamSearch(): Common.PokemonSummarySearchInputs | null {
             pokemonName: params.pokemon,
             generation: params.gen,
             isDoubles: isDoublesValid(params.gen, params.doubles),
-            isLead: false,
+            isLead: String(params.lead) === "true" && doesLeadAffectSimulation(params.gen),
         };
     }
     return null;
@@ -70,8 +75,11 @@ function getLocalStorageSearch(): Common.PokemonSummarySearchInputs | null {
 
 function saveSearchToUrlParams(search: Common.PokemonSummarySearchInputs) {
     const params: SearchUrlParams = { pokemon: search.pokemonName, gen: search.generation };
-    if (isDoublesValid(search.generation, search.isDoubles)){
+    if (isDoublesValid(search.generation, search.isDoubles)) {
         params.doubles = true;
+    }
+    if (search.isLead && doesLeadAffectSimulation(search.generation)) {
+        params.lead = true;
     }
 
     const urlParams = qs.stringify(params, { addQueryPrefix: true });
