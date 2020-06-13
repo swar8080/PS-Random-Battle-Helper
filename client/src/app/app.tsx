@@ -5,6 +5,7 @@ import React from "react";
 import PokemonSummary from "./pokemonSummary/PokemonSummary";
 import "./App.scss";
 import AppHeader from "./AppHeader";
+import AppFooter from './AppFooter';
 import useSavedSearch from "./useSavedSearch";
 import { useAnalytics } from "./useAnalytics";
 
@@ -18,10 +19,11 @@ const App = () => {
     };
 
     return (
-        <>
+        <div className='app'>
             <AppHeader />
             <PokemonSummary initialSearch={initialSearch} onSearchChange={onSearchChange} />
-        </>
+            <AppFooter />
+        </div>
     );
 };
 
