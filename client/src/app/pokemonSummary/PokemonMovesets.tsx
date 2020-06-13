@@ -79,7 +79,7 @@ const MoveDetails: React.FC<MoveDetailsProps> = ({ move, showAdditionalDetails }
             </div>
             {showAdditionalDetails && (
                 <div className="movesets__additionalDetails">
-                    {!!move.damage && <div>Damage: {move.damage}</div>}
+                    {!!move.damage && <div>Power: {move.damage}</div>}
                     {move.accuracy && <div>Accuracy: {move.accuracy}%</div>}
                     <div>{move.pp}PP</div>
                 </div>
