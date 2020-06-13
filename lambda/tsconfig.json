@@ -22,6 +22,6 @@
         "src/app.ts",
         "src/pokemon-showdown-lib/.data-dist/**/*",
         "src/pokemon-showdown-lib/.data-dist/**/*.json",
-        "src/pokemon-showdown-lib/config/formats.js",
+        "src/pokemon-showdown-lib/.config-dist/formats.ts",
     ]
 }

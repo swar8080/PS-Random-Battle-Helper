@@ -6,6 +6,8 @@ const prepend = require('prepend-file');
 const PS_SOURCE_DIR = path.resolve(__dirname, '../../pokemon-showdown/');
 const TARGET_DIR = path.resolve(__dirname,'../src/pokemon-showdown-lib/');
 
+fs.removeSync(TARGET_DIR);
+
 copyDirectory('data', '.data-dist');
 
 copyDirectory('sim', 'sim').then(() => {
@@ -17,7 +19,7 @@ copyDirectory('sim', 'sim').then(() => {
 });
 
 copyDirectory('lib', 'lib');
-copyDirectory('config', 'config').then(() => filterFiles('config', /datacenters\.csv/, false));
+copyDirectory('config', '.config-dist').then(() => filterFiles('.config-dist', /datacenters\.csv/, false));
 
 async function copyDirectory(source, target){
 	const sourcePath = path.resolve(PS_SOURCE_DIR, source);
